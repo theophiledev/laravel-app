@@ -59,4 +59,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(FoodTaken::class, 'student_id');
     }
+
+    /**
+     * Get the comments written by this user.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

@@ -8,6 +8,9 @@
     <!-- Font (Figtree from Google Fonts) -->
     <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -157,6 +160,62 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </section>
+
+    <!-- Comments Section -->
+    <section class="py-16 md:py-20 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-4 md:px-6">
+            <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">Student Feedback</h2>
+            <p class="text-center text-gray-600 mb-8">See what our students are saying about the meal system</p>
+            
+            @php
+                $comments = \App\Models\Comment::with('user')->approved()->latest()->take(6)->get();
+            @endphp
+            
+            @if($comments->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($comments as $comment)
+                        <div class="bg-white rounded-xl shadow-md hover:shadow-lg p-6 transition-all duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-user text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $comment->user->name }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $comment->created_at->format('M d, Y') }}</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 text-sm leading-relaxed">{{ Str::limit($comment->content, 120) }}</p>
+                            @if($comment->admin_response)
+                                <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                    <p class="text-xs font-medium text-blue-800 mb-1">Response:</p>
+                                    <p class="text-xs text-blue-700">{{ Str::limit($comment->admin_response, 80) }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                
+                <div class="text-center mt-8">
+                    <a href="{{ route('login') }}" class="btn bg-blue-600 text-white hover:bg-blue-700">
+                        <i class="fas fa-comments mr-2"></i>
+                        Share Your Feedback
+                    </a>
+                </div>
+            @else
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-comments text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-600 mb-3">No Comments Yet</h3>
+                    <p class="text-gray-500 mb-6">Be the first to share your feedback about our meal system!</p>
+                    <a href="{{ route('login') }}" class="btn bg-blue-600 text-white hover:bg-blue-700">
+                        <i class="fas fa-comments mr-2"></i>
+                        Share Your Feedback
+                    </a>
+                </div>
+            @endif
         </div>
     </section>
 

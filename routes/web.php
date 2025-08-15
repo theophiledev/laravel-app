@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ConfirmMealController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TakeFoodController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MealConfirmedNotification;
@@ -12,6 +14,10 @@ use App\Http\Controllers\MealCostController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Comments Routes
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
 // Session-based dashboard routes (no login required)
 Route::get('/dashboard', function () {
@@ -75,11 +81,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/passkey', [SettingsController::class, 'updatePasskey'])->name('settings.passkey');
 });
 
+// Take Food Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/take-food', [TakeFoodController::class, 'index'])->name('take-food');
+    Route::post('/take-food/access', [TakeFoodController::class, 'accessMeal'])->name('take-food.access');
+    Route::get('/take-food/payment', [TakeFoodController::class, 'showPayment'])->name('take-food.payment');
+    Route::post('/take-food/payment', [TakeFoodController::class, 'processPayment'])->name('take-food.payment.process');
+});
+
 // Manager Routes (only for managers and admins)
 Route::middleware(['auth', 'role:manager,admin'])->group(function () {
     Route::get('/manager/meal-costs', [MealCostController::class, 'index'])->name('manager.meal-costs');
     Route::post('/manager/meal-costs/bulk-update', [MealCostController::class, 'updateAllMealCosts'])->name('manager.meal-costs.bulk-update');
     Route::post('/manager/meal-costs/{user}/update', [MealCostController::class, 'updateUserMealCost'])->name('manager.meal-costs.update');
+    
+    // Comment Management Routes
+    Route::get('/manager/comments', [CommentController::class, 'manage'])->name('manager.comments');
+    Route::patch('/manager/comments/{comment}/approve', [CommentController::class, 'approve'])->name('manager.comments.approve');
+    Route::patch('/manager/comments/{comment}/reject', [CommentController::class, 'reject'])->name('manager.comments.reject');
+    Route::post('/manager/comments/{comment}/respond', [CommentController::class, 'respond'])->name('manager.comments.respond');
 });
 
 // Test email route (development only)

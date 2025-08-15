@@ -83,6 +83,18 @@
                 </div>
             </a>
             
+            <a href="{{ route('manager.comments') }}" class="card hover:shadow-lg transition-shadow">
+                <div class="flex items-center">
+                    <div class="icon-box bg-orange-100">
+                        <i class="fas fa-comments text-orange-600"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-bold text-gray-800">Comments</h3>
+                        <p class="text-sm text-gray-600">Review and manage feedback</p>
+                    </div>
+                </div>
+            </a>
+            
             <a href="#" class="card hover:shadow-lg transition-shadow">
                 <div class="flex items-center">
                     <div class="icon-box bg-purple-100">
